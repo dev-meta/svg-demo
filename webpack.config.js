@@ -1,6 +1,9 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const EslintWebpackPlugin = require("eslint-webpack-plugin");
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const path = require("path");
 const dotenv = require('dotenv');
 const {expand} = require('dotenv-expand');
@@ -15,7 +18,7 @@ const isEnvProduction = process.env.NODE_ENV === 'production';
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
 const config = {
-  entry: "./src/index.js",
+  entry: "./src/index",
   mode: isEnvProduction ? "production" : "development",
   output: {
     clean: true,
@@ -90,6 +93,7 @@ const config = {
   devServer: {
     static: path.resolve(__dirname, "dist"),
     historyApiFallback: true,
+    hot: true,
     client: {
       overlay: {
         errors: true,
@@ -98,30 +102,32 @@ const config = {
     },
   },
   plugins: [
+    new CaseSensitivePathsPlugin(),
+    isEnvDevelopment && new ReactRefreshWebpackPlugin(),
     new HtmlWebpackPlugin(
-    Object.assign(
-      {},
-      {
-        template: "./public/index.html",
-        inject: "body",
-      },
-      isEnvProduction
-        ? {
-            minify: {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true,
-            },
-          }
-        : undefined
-    )
+      Object.assign(
+        {},
+        {
+          template: "./public/index.html",
+          inject: "body",
+        },
+        isEnvProduction
+          ? {
+              minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true,
+              },
+            }
+          : undefined
+      )
     ),
     isEnvDevelopment &&  new EslintWebpackPlugin({
       // extensions: ["js", "mjs", "jsx", "ts", "tsx"],
@@ -138,17 +144,29 @@ const config = {
       //   extends: [require.resolve("eslint-config-react-app/base")],
       // },
     }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: 'public',
+          to: '.',
+          filter(source) {
+            const target = path.resolve(__dirname, 'public/index.html');
+            return target !== source;
+          }
+        }
+      ]
+    })
   ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-    extensions: [".mjs", ".js", ".jsx", ".json"]
+    extensions: [".tsx", ".ts", ".js", ".jsx", ".json"]
   },
   module: {
     rules: [
       {
-        test: /\.m?jsx?$/,
+        test: /\.(tsx?|jsx?)$/,
         exclude: /(node_modules|bower_components)/,
         use: {
           // Use `.swcrc` to configure swc
@@ -157,8 +175,8 @@ const config = {
             sync: true,
             jsc: {
               parser: {
-                syntax: "ecmascript",
-                jsx: true,
+                syntax: "typescript",
+                tsx: true,
                 dynamicImport: false,
                 privateMethod: true,
                 functionBind: false,
@@ -171,10 +189,14 @@ const config = {
               },
               transform: {
                 react: {
+                  refresh: isEnvDevelopment,
+                  development: isEnvDevelopment,
                   runtime: "automatic",
                   pragmaFrag: "React.Fragment",
                   throwIfNamespace: true,
-                  development: false,
+                  // development 不设置 会自动读取webpack mode
+                  // development: false,
+                  // Use Object.assign() instead of _extends. Defaults to false.
                   useBuiltins: false,
                 },
               },
