@@ -7,10 +7,10 @@ module.exports = {
     },
     "extends": [
         "eslint:recommended",
-        // "plugin:react/recommended",
+        "plugin:react/recommended",
         "plugin:react/jsx-runtime",
         "react-app",
-        // "plugin:jsx-a11y/recommended"
+        "plugin:jsx-a11y/recommended"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -24,6 +24,13 @@ module.exports = {
         "jsx-a11y"
     ],
     "rules": {
-        "no-unused-vars": 1
+        "no-unused-vars": 1,
+        'react/jsx-first-prop-new-line': [1, 'multiline'],
+        'react/jsx-max-props-per-line': [
+            1,
+            {
+                maximum: 1,
+            },
+        ],
     }
 }
