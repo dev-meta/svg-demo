@@ -1,15 +1,20 @@
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const EslintWebpackPlugin = require("eslint-webpack-plugin");
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const InterpolateHtmlPlugin = require('interpolate-html-plugin');
 const path = require("path");
 const dotenv = require('dotenv');
 const {expand} = require('dotenv-expand');
 const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin')
 const smp = new SpeedMeasureWebpackPlugin();
 expand(dotenv.config());
+
+
+const env = require('./config/env')
 
 const measure = process.env.measure;
 
@@ -23,7 +28,7 @@ const config = {
   output: {
     clean: true,
     path: path.resolve(__dirname, "dist"),
-    publicPath: '/',
+    publicPath: env.publicPath,
     // There will be one main bundle, and one file per asynchronous chunk.
     // In development, it does not produce real files.
     filename: isEnvProduction
@@ -129,6 +134,7 @@ const config = {
           : undefined
       )
     ),
+    new InterpolateHtmlPlugin(env.raw),
     isEnvDevelopment &&  new EslintWebpackPlugin({
       // extensions: ["js", "mjs", "jsx", "ts", "tsx"],
       // formatter: require.resolve("react-dev-utils/eslintFormatter"),
@@ -155,7 +161,8 @@ const config = {
           }
         }
       ]
-    })
+    }),
+    new webpack.DefinePlugin(env.stringified),
   ].filter(Boolean),
   resolve: {
     alias: {
