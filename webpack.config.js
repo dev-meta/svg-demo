@@ -225,6 +225,10 @@ const config = {
           'postcss-loader',
           'less-loader'
         ]
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/,
+        type: 'asset'
       }
     ],
   },
