@@ -20,12 +20,17 @@
   },
   "homepage": "https://github.com/wangzongqi1001/react-template#readme",
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@svgdotjs/svg.draggable.js": "^3.0.2",
+    "@svgdotjs/svg.js": "^3.1.2",
     "dotenv": "^16.0.0",
     "dotenv-expand": "^8.0.2",
     "interpolate-html-plugin": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.2.2"
+    "react-helmet": "^6.1.0",
+    "react-router-dom": "^6.2.2",
+    "styled-components": "^5.3.5"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",

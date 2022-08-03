@@ -1,7 +1,13 @@
+import { MainContext } from './contexts/MainContext';
+
+import { MainLayout } from './layouts/Main';
+
 function App() {
-    return <div>
-        <h1>欢迎使用react模板</h1>
-    </div>
+    return (
+        <MainContext.Provider value={{ title: 'lol' }}>
+            <MainLayout />
+        </MainContext.Provider>
+    );
 }
 
 export default App;
