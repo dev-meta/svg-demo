@@ -35,9 +35,9 @@ export const SVGjs: FC<{}> = (): JSX.Element => {
     const [stepX] = useState<number>(16);
 
     /** SVG container height */
-    const [height] = useState<number>(1080);
+    const [height] = useState<number>(600);
     /** SVG container width */
-    const [width] = useState<number>(1920);
+    const [width] = useState<number>(800);
 
     /** IF entitity config */
     const [ifConfig] = useState<any>({
@@ -129,7 +129,8 @@ export const SVGjs: FC<{}> = (): JSX.Element => {
             /** check is SVG wrapper DOM Element don't have children DOM Elements */
             if (SVGDOMElement && SVGChildrenDOMElements && SVGChildrenDOMElements.length < 1) {
                 /** set sizes to our SVG container */
-                SVGContainer.size(width, height);
+                SVGContainer.size('100%', '100%');
+                // SVGContainer.size(width, height);
                 /** add our SVG container into wrapper DOM Element */
                 SVGContainer.addTo(SVGDOMElement);
                 /** create rectangle and insert it into our SVG container */
